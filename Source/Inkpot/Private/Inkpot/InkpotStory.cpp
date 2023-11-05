@@ -281,10 +281,11 @@ void UInkpotStory::ClearVariableChange( const UObject* Owner, const FString &InV
 	
 	for (auto Iterator = VariableObservers.CreateConstKeyIterator(InVariable); Iterator; ++Iterator)
 	{
-		if (Owner == Iterator->Value->GetUObject())
+		TSharedPtr<TDelegate<void(const FString&, TUnion<int, float, bool, FString, TSharedPtr<Ink::FPath>, Ink::FInkList>)>> InValue = Iterator.Value();
+		if (Owner == InValue->GetUObject())
 		{
-			StoryInternal->RemoveVariableObserver( Iterator->Value, InVariable );
-			VariableObservers.RemoveSingle( InVariable, Iterator->Value );
+			StoryInternal->RemoveVariableObserver( InValue, InVariable );
+			VariableObservers.RemoveSingle( InVariable, InValue );
 		}
 	}
 }
